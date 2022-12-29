@@ -5,7 +5,6 @@ import {
   IsBoolean,
   IsArray,
 } from 'class-validator';
-import { Ticket } from '../entities/ticket.entity';
 
 export class CreateEventeDto {
   @IsNotEmpty()
@@ -25,7 +24,4 @@ export class CreateEventeDto {
 
   @IsBoolean()
   readonly status: boolean;
-
-  @IsArray()
-  readonly tickets: number[];
 }

@@ -6,7 +6,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Ticket } from './ticket.entity';
 import { User } from 'src/users/entities/user.entity';
 import { TimestampEntities } from 'src/generics/timestamp.entities';
 
@@ -29,12 +28,6 @@ export class Evente extends TimestampEntities {
 
   @Column({ default: true })
   status: boolean;
-
-  @JoinTable()
-  @OneToMany((type) => Ticket, (ticket) => ticket.eventes, {
-    cascade: true,
-  })
-  tickets: Ticket[];
 
   @ManyToOne((type) => User, (user) => user.eventes)
   users: User;
