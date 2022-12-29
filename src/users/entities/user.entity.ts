@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User extends TimestampEntities{
+export class User extends TimestampEntities {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
@@ -20,6 +20,9 @@ export class User extends TimestampEntities{
 
   @Column({ unique: true })
   readonly email: string;
+
+  @Column()
+  readonly contacts: number;
 
   @Exclude()
   @Column()
