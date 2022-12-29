@@ -18,7 +18,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post('/inscription')
+  @Post('/register')
   signUp(@Body() user: SignupDto): Promise<User | String> {
     return this.usersService.postSignup(user);
   }
