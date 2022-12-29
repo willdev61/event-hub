@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { EventesService } from './eventes.service';
 import { CreateEventeDto } from './dto/create-evente.dto';
