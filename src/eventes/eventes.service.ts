@@ -20,11 +20,16 @@ export class EventesService {
     return this.eventeRepository.save(event, user);
   }
 
-  async getEvents(user): Promise<Evente[]> {
-    return await this.eventeRepository.find({
-      where: { users: user },
-      relations: ['tickets'],
-    });
+  async getEvents(): Promise<Evente[]> {
+    return await this.eventeRepository.find();
+  }
+
+  async getEventUser() {
+    const qb = this.eventeRepository.createQueryBuilder('event');
+    return qb
+      .select('evente.usersId, count(evente.id)')
+      .groupBy('evente.usersId')
+      .getMany();
   }
 
   async findOne(id: string) {
