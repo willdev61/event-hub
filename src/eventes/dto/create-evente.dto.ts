@@ -1,10 +1,4 @@
-import {
-  IsNumber,
-  IsNotEmpty,
-  IsString,
-  IsBoolean,
-  IsArray,
-} from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 
 export class CreateEventeDto {
   @IsNotEmpty()
@@ -15,8 +9,16 @@ export class CreateEventeDto {
   @IsString()
   readonly description: string;
 
+  @IsNotEmpty()
+  @IsString()
+  readonly location: string;
+
   @IsString()
   readonly date: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  readonly price: number;
 
   @IsNotEmpty()
   @IsNumber()

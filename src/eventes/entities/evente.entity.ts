@@ -21,7 +21,13 @@ export class Evente extends TimestampEntities {
   description: string;
 
   @Column()
+  location: string;
+
+  @Column()
   date: string;
+
+  @Column()
+  price: number;
 
   @Column()
   nbPlace: number;
