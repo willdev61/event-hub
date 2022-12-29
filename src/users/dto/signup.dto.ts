@@ -24,9 +24,12 @@ export class SignupDto {
   @IsNotEmpty()
   readonly password: string;
 
-  @Length(10)
+  @Length(2, 10)
+  @IsNotEmpty()
   @IsNumber()
   readonly contacts: number;
 
-  @IsEnum(UserRole) @IsOptional() readonly role: string;
+  @IsEnum(UserRole)
+  @IsOptional()
+  readonly role: string;
 }
