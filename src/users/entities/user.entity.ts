@@ -32,6 +32,6 @@ export class User extends TimestampEntities {
   role: UserRole;
 
   @JoinTable()
-  @OneToMany((type) => Evente, (evente) => evente.users)
+  @OneToMany((type) => Evente, (evente) => evente.user)
   eventes: Evente[];
 }

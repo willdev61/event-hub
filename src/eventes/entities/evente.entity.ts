@@ -36,5 +36,5 @@ export class Evente extends TimestampEntities {
   status: boolean;
 
   @ManyToOne((type) => User, (user) => user.eventes)
-  users: User;
+  user: User;
 }

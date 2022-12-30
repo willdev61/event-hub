@@ -18,7 +18,7 @@ export class EventesService {
 
   async createEvent(createEventeDto: CreateEventeDto, user): Promise<Evente> {
     const event = this.eventeRepository.create({ ...createEventeDto });
-    event.users = user;
+    event.user = user;
     return this.eventeRepository.save(event, user);
   }
 
@@ -61,7 +61,7 @@ export class EventesService {
     if (!event) {
       throw new NotFoundException(`L'évenement d'id ${id} n'existe pas.`);
     }
-    event.users = user;
+    event.user = user;
     return this.eventeRepository.save(event, user);
   }
 
