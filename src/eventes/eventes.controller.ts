@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { EventesService } from './eventes.service';
 import { CreateEventeDto } from './dto/create-evente.dto';
@@ -14,6 +15,7 @@ import { UpdateEventeDto } from './dto/update-evente.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { Evente } from './entities/evente.entity';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Controller('events')
 export class EventesController {
@@ -26,8 +28,10 @@ export class EventesController {
   }
 
   @Get()
-  async getAllEvents(): Promise<Evente[]> {
-    return await this.eventesService.getEvents();
+  async getAllEvents(
+    @Query() paginationQuery: PaginationQueryDto,
+  ): Promise<Evente[]> {
+    return await this.eventesService.getAllEvents(paginationQuery);
   }
 
   @Get('users')

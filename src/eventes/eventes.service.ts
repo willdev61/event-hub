@@ -5,6 +5,7 @@ import { Evente } from './entities/evente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Injectable()
 export class EventesService {
@@ -21,8 +22,12 @@ export class EventesService {
     return this.eventeRepository.save(event, user);
   }
 
-  async getEvents(): Promise<Evente[]> {
-    return await this.eventeRepository.find();
+  async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
+    const { limit, offset } = paginationQuery;
+    return await this.eventeRepository.find({
+      skip: offset,
+      take: limit,
+    });
   }
 
   async getEventUser() {

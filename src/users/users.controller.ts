@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Controller('users')
 export class UsersController {
@@ -32,8 +34,8 @@ export class UsersController {
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
-  async getAllUsers() {
-    return await this.usersService.getAllUsers();
+  async getAllUsers(@Query() paginationQuery: PaginationQueryDto) {
+    return await this.usersService.getAllUsers(paginationQuery);
   }
 
   @Get(':id')

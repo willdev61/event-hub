@@ -12,7 +12,7 @@ dotenv.config();
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [UsersService, JwtStrategy],
+  providers: [UsersService],
   controllers: [UsersController],
 })
 export class UsersModule {}

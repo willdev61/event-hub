@@ -26,7 +26,6 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
