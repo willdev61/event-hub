@@ -24,7 +24,7 @@ export class SignupDto {
   @IsNotEmpty()
   readonly password: string;
 
-  @Length(2, 10)
+  // @Length(2, 10)
   @IsNotEmpty()
   @IsNumber()
   readonly contacts: number;

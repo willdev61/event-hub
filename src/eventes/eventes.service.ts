@@ -3,7 +3,7 @@ import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
 import { Evente } from './entities/evente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
@@ -12,6 +12,7 @@ export class EventesService {
     @InjectRepository(Evente)
     private readonly eventeRepository: Repository<Evente>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createEvent(createEventeDto: CreateEventeDto, user): Promise<Evente> {
@@ -25,11 +26,12 @@ export class EventesService {
   }
 
   async getEventUser() {
-    const qb = this.eventeRepository.createQueryBuilder('event');
-    return qb
-      .select('evente.usersId, count(evente.id)')
-      .groupBy('evente.usersId')
+    const event = await this.dataSource
+      .getRepository(Evente)
+      .createQueryBuilder('evente.users')
+      .where({})
       .getMany();
+    return event;
   }
 
   async findOne(id: string) {

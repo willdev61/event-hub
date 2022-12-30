@@ -11,7 +11,7 @@ import {
 import { EventesService } from './eventes.service';
 import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
-import { JwtAuthGuard } from 'src/users/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { Evente } from './entities/evente.entity';
 
@@ -26,14 +26,20 @@ export class EventesController {
   }
 
   @Get()
-  async getAllEvents(@User() user): Promise<Evente[]> {
-    return await this.eventesService.getEvents(user);
+  async getAllEvents(): Promise<Evente[]> {
+    return await this.eventesService.getEvents();
+  }
+
+  @Get('users')
+  @UseGuards(JwtAuthGuard)
+  async getEventByUser() {
+    return await this.eventesService.getEventUser();
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  findOneEvent(@Param('id') id: string) {
-    return this.eventesService.findOne(id);
+  async findOneEvent(@Param('id') id: string): Promise<Evente> {
+    return await this.eventesService.findOne(id);
   }
 
   @Patch(':id')
