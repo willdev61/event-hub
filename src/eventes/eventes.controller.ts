@@ -12,11 +12,12 @@ import {
 import { EventesService } from './eventes.service';
 import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
-import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
-import { CurrentUser, Roles } from 'src/auth/decorators';
+import { JwtAuthGuard, RolesGuard } from '../auth/guards';
+import { CurrentUser, Roles } from '../auth/decorators';
 import { Evente } from './entities/evente.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
-import { UserRole } from 'src/enums/role.enum';
+import { UserRole } from '../enums/role.enum';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('events')
 export class EventesController {
@@ -27,7 +28,7 @@ export class EventesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async createEvent(
     @Body() createEventeDto: CreateEventeDto,
-    @CurrentUser() user,
+    @CurrentUser() user: User,
   ) {
     return await this.eventesService.createEvent(createEventeDto, user);
   }
@@ -39,10 +40,14 @@ export class EventesController {
     return await this.eventesService.getAllEvents(paginationQuery);
   }
 
-  @Get('users')
-  @UseGuards(JwtAuthGuard)
-  async getEventByUser() {
-    return await this.eventesService.getEventUser();
+  @Get('get-organizer-events')
+  @Roles(UserRole.Organizer)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  getOrganizerEvents(
+    @Query() paginationQuery: PaginationQueryDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventesService.getOrgnizerEvents(paginationQuery, user);
   }
 
   @Get(':id')

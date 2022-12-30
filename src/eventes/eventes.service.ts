@@ -16,7 +16,10 @@ export class EventesService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createEvent(createEventeDto: CreateEventeDto, user): Promise<Evente> {
+  async createEvent(
+    createEventeDto: CreateEventeDto,
+    user: any,
+  ): Promise<Evente> {
     const event = this.eventeRepository.create({ ...createEventeDto });
     event.user = user;
     return this.eventeRepository.save(event, user);
@@ -24,7 +27,21 @@ export class EventesService {
 
   async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
     const { limit, offset } = paginationQuery;
-    return await this.eventeRepository.find({
+
+    return this.eventeRepository.find({
+      skip: offset,
+      take: limit,
+    });
+  }
+
+  getOrgnizerEvents(
+    paginationQuery: PaginationQueryDto,
+    { id }: User,
+  ): Promise<Evente[]> {
+    const { limit, offset } = paginationQuery;
+
+    return this.eventeRepository.find({
+      where: { user: { id } },
       skip: offset,
       take: limit,
     });
