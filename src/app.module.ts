@@ -3,10 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventesModule } from './eventes/eventes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Evente } from './eventes/entities/evente.entity';
-import { UserRole } from './enums/role.enum';
-import { User } from './users/entities/user.entity';
-import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 
