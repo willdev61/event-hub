@@ -22,14 +22,14 @@ export class User extends TimestampEntities {
   readonly email: string;
 
   @Column()
-  readonly contacts: number;
+  readonly contacts: string;
 
   @Exclude()
   @Column()
   password: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.User })
-  role: string;
+  role: UserRole;
 
   @JoinTable()
   @OneToMany((type) => Evente, (evente) => evente.users)

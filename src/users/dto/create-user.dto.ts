@@ -26,10 +26,10 @@ export class CreateUserDto {
 
   // @Length(2, 10)
   @IsNotEmpty()
-  @IsNumber()
-  readonly contacts: number;
+  @IsString()
+  readonly contacts: string;
 
   @IsEnum(UserRole)
   @IsOptional()
-  readonly role: string;
+  readonly role: UserRole;
 }

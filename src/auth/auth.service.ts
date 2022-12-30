@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common/exceptions';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt/dist';
+import { UserRole } from 'src/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -19,13 +20,24 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  createUserAccount(userData: SignupDto) {
+    return this.postSignup({ ...userData, role: UserRole.User });
+  }
+
+  createManagerAccount(managerData: SignupDto) {
+    return this.postSignup({ ...managerData, role: UserRole.Organizer });
+  }
+
   async postSignup(userData: SignupDto): Promise<User> {
     const { password } = userData;
     const hash = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({ ...userData, password: hash });
+    const user = this.userRepository.create({
+      ...userData,
+      password: hash,
+    });
+
     try {
-      this.userRepository.save(user);
-      return user;
+      return this.userRepository.save(user);
     } catch (error) {
       throw new ConflictException(error.message);
     }

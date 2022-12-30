@@ -17,13 +17,13 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('/user/register')
   userSignUp(@Body() user: SignupDto): Promise<User> {
-    return this.authService.postSignup(user);
+    return this.authService.createUserAccount(user);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('/organizer/register')
   organizerSignUp(@Body() user: SignupDto): Promise<User> {
-    return this.authService.postSignup(user);
+    return this.authService.createManagerAccount(user);
   }
 
   @Post('/connexion')
