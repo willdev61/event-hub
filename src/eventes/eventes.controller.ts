@@ -12,18 +12,23 @@ import {
 import { EventesService } from './eventes.service';
 import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { User } from 'src/decorators/user.decorator';
+import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
+import { CurrentUser, Roles } from 'src/auth/decorators';
 import { Evente } from './entities/evente.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { UserRole } from 'src/enums/role.enum';
 
 @Controller('events')
 export class EventesController {
   constructor(private readonly eventesService: EventesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  async createEvent(@Body() createEventeDto: CreateEventeDto, @User() user) {
+  @Roles(UserRole.Organizer)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async createEvent(
+    @Body() createEventeDto: CreateEventeDto,
+    @CurrentUser() user,
+  ) {
     return await this.eventesService.createEvent(createEventeDto, user);
   }
 
@@ -51,7 +56,7 @@ export class EventesController {
   async updateEvent(
     @Param('id') id: string,
     @Body() updateEventeDto: UpdateEventeDto,
-    @User() user,
+    @CurrentUser() user,
   ): Promise<Evente> {
     return await this.eventesService.updateEvent(+id, updateEventeDto, user);
   }
