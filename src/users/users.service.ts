@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +13,12 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async getAllUsers() {
-    return await this.userRepository.find();
+  async getAllUsers(paginationQuery: PaginationQueryDto) {
+    const { limit, offset } = paginationQuery;
+    return await this.userRepository.find({
+      skip: offset,
+      take: limit,
+    });
   }
 
   async getOneUser(id: string) {
