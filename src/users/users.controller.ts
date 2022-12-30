@@ -25,7 +25,7 @@ export class UsersController {
   ) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.authService.postSignup(createUserDto);
   }
 
@@ -37,6 +37,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
   }

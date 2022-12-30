@@ -10,13 +10,19 @@ import { LoginDto } from '../auth/dto/login.dto';
 import { AuthService } from './auth.service';
 import { User } from 'src/users/entities/user.entity';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post('/register')
-  signUp(@Body() user: SignupDto): Promise<User | String> {
+  @Post('/user/register')
+  userSignUp(@Body() user: SignupDto): Promise<User> {
+    return this.authService.postSignup(user);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Post('/organizer/register')
+  organizerSignUp(@Body() user: SignupDto): Promise<User> {
     return this.authService.postSignup(user);
   }
 

@@ -19,7 +19,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async postSignup(userData: SignupDto): Promise<User | String> {
+  async postSignup(userData: SignupDto): Promise<User> {
     const { password } = userData;
     const hash = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({ ...userData, password: hash });
