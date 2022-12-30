@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { UserRole } from 'src/enums/role.enum';
 import { Evente } from 'src/eventes/entities/evente.entity';
+import { Participation } from 'src/participation/entities/participation.entity';
 import { TimestampEntities } from 'src/generics/timestamp.entities';
 import {
   Column,
@@ -34,4 +35,8 @@ export class User extends TimestampEntities {
   @JoinTable()
   @OneToMany((type) => Evente, (evente) => evente.user)
   eventes: Evente[];
+
+  @JoinTable()
+  @OneToMany((type) => Participation, (participation) => participation.user)
+  participations: Participation[];
 }

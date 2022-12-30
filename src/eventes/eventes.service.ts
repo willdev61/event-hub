@@ -12,8 +12,6 @@ export class EventesService {
   constructor(
     @InjectRepository(Evente)
     private readonly eventeRepository: Repository<Evente>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly dataSource: DataSource,
   ) {}
 
   async createEvent(
@@ -45,15 +43,6 @@ export class EventesService {
       skip: offset,
       take: limit,
     });
-  }
-
-  async getEventUser() {
-    const event = await this.dataSource
-      .getRepository(Evente)
-      .createQueryBuilder('evente.users')
-      .where({})
-      .getMany();
-    return event;
   }
 
   async findOne(id: string) {

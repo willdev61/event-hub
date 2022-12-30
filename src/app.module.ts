@@ -5,6 +5,7 @@ import { EventesModule } from './eventes/eventes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { ParticipationModule } from './participation/participation.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    ParticipationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

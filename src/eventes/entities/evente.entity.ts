@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { TimestampEntities } from 'src/generics/timestamp.entities';
+import { Participation } from '../../participation/entities/participation.entity';
 
 @Entity()
 export class Evente extends TimestampEntities {
@@ -37,4 +38,8 @@ export class Evente extends TimestampEntities {
 
   @ManyToOne((type) => User, (user) => user.eventes)
   user: User;
+
+  @JoinTable()
+  @OneToMany((type) => Participation, (participation) => participation.evente)
+  participations: Participation[];
 }
