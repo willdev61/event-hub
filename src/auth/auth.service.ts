@@ -24,8 +24,8 @@ export class AuthService {
     return this.postSignup({ ...userData, role: UserRole.User });
   }
 
-  createManagerAccount(managerData: SignupDto) {
-    return this.postSignup({ ...managerData, role: UserRole.Organizer });
+  createOrganizerAccount(organizerData: SignupDto) {
+    return this.postSignup({ ...organizerData, role: UserRole.Organizer });
   }
 
   async postSignup(userData: SignupDto): Promise<User> {
@@ -44,9 +44,9 @@ export class AuthService {
   }
 
   async postLogin(userData: LoginDto) {
-    const { username, password } = userData;
+    const { email, password } = userData;
     const user = await this.userRepository.findOne({
-      where: { username: username },
+      where: { email: email },
     });
     if (!user) throw new NotFoundException('Utilisateur non existant');
     const match = await bcrypt.compare(password, user.password);
