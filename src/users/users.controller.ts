@@ -18,6 +18,8 @@ import { User } from './entities/user.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { UserRole } from 'src/enums/role.enum';
+import { Roles } from 'src/auth/decorators';
 
 @Controller('users')
 export class UsersController {
@@ -26,19 +28,21 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.authService.postSignup(createUserDto);
-  }
+  // @Post()
+  // async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+  //   return await this.authService.postSignup(createUserDto);
+  // }
 
-  @Get()
+  @Get('/get-users')
   @UseInterceptors(ClassSerializerInterceptor)
+  @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   async getAllUsers(@Query() paginationQuery: PaginationQueryDto) {
     return await this.usersService.getAllUsers(paginationQuery);
   }
 
   @Get(':id')
+  @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
@@ -46,7 +50,7 @@ export class UsersController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async updateEvent(
+  async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
@@ -55,19 +59,21 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async removeEvent(@Param('id') id: string) {
+  async removeUserAccount(@Param('id') id: string) {
     return await this.usersService.removeUser(id);
   }
 
   @Delete('desactivate/:id')
+  @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
-  async desactivateEvent(@Param('id') id: string) {
+  async desactivateUserAccount(@Param('id') id: string) {
     return await this.usersService.softDeleteUser(id);
   }
 
   @Get('restore/:id')
+  @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
-  async recoverEvent(@Param('id') id: string) {
+  async recoverUserAccount(@Param('id') id: string) {
     return await this.usersService.restoreUser(id);
   }
 }

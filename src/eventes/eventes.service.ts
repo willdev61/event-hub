@@ -32,7 +32,7 @@ export class EventesService {
     });
   }
 
-  getOrgnizerEvents(
+  getOrganizerEvents(
     paginationQuery: PaginationQueryDto,
     { id }: User,
   ): Promise<Evente[]> {

@@ -33,7 +33,7 @@ export class EventesController {
     return await this.eventesService.createEvent(createEventeDto, user);
   }
 
-  @Get()
+  @Get('get-all-events')
   async getAllEvents(
     @Query() paginationQuery: PaginationQueryDto,
   ): Promise<Evente[]> {
@@ -47,7 +47,7 @@ export class EventesController {
     @Query() paginationQuery: PaginationQueryDto,
     @CurrentUser() user: User,
   ) {
-    return this.eventesService.getOrgnizerEvents(paginationQuery, user);
+    return this.eventesService.getOrganizerEvents(paginationQuery, user);
   }
 
   @Get(':id')
@@ -57,7 +57,8 @@ export class EventesController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.Organizer)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateEvent(
     @Param('id') id: string,
     @Body() updateEventeDto: UpdateEventeDto,
@@ -67,19 +68,24 @@ export class EventesController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.Organizer, UserRole.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
   async removeEvent(@Param('id') id: string) {
     return await this.eventesService.removeEvent(id);
   }
 
   @Delete('desactivate/:id')
+  @Roles(UserRole.Organizer, UserRole.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
   async desactivateEvent(@Param('id') id: string) {
     return await this.eventesService.softDeleteEvent(id);
   }
 
   @Get('restore/:id')
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.Organizer, UserRole.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async recoverEvent(@Param('id') id: string) {
     return await this.eventesService.restoreEvent(id);
   }
