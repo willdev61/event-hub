@@ -1,16 +1,24 @@
-import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  UseGuards,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ParticipationService } from './participation.service';
 import { CreateParticipationDto } from './dto/create-participation.dto';
-import { CurrentUser } from 'src/auth/decorators';
+import { CurrentUser, Roles } from 'src/auth/decorators';
 import { User } from 'src/users/entities/user.entity';
-import { JwtAuthGuard } from 'src/auth/guards';
-import { get } from 'http';
+import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
+import { UserRole } from 'src/enums/role.enum';
 
 @Controller('participation')
 export class ParticipationController {
   constructor(private readonly participationService: ParticipationService) {}
 
-  @Post()
+  @Post('/add-new-participation')
   @UseGuards(JwtAuthGuard)
   addNewParticipation(
     @Body() data: CreateParticipationDto,
@@ -19,9 +27,17 @@ export class ParticipationController {
     return this.participationService.addNewParticipation(data, user);
   }
 
-  @Get('get-user-participations')
+  @Get('/get-user-participations')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   getUserParticipations(@CurrentUser() user: User) {
     return this.participationService.getUserParticipations(user);
+  }
+
+  @Get('/get-event-participants')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  getEventParticipants(@CurrentUser() user: User) {
+    return this.participationService.getEventParticipants(user);
   }
 }

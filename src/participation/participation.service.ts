@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateParticipationDto } from './dto/create-participation.dto';
 import { User } from 'src/users/entities/user.entity';
+import { Evente } from 'src/eventes/entities/evente.entity';
 
 @Injectable()
 export class ParticipationService {
@@ -12,7 +13,7 @@ export class ParticipationService {
     private readonly participationRepository: Repository<Participation>,
   ) {}
 
-  addNewParticipation(
+  async addNewParticipation(
     data: CreateParticipationDto,
     user: User,
   ): Promise<Participation> {
@@ -20,13 +21,22 @@ export class ParticipationService {
     participation.eventId = data.eventId;
     participation.userId = user.id;
 
-    return this.participationRepository.save(participation);
+    return await this.participationRepository.save(participation);
   }
 
-  getUserParticipations(user: User): Promise<Participation[]> {
-    return this.participationRepository.find({
+  async getUserParticipations(user: User): Promise<Participation[]> {
+    return await this.participationRepository.find({
       where: { userId: user.id },
-      relations: ['evente', 'user'],
+      relations: ['evente'],
+      select: ['userId', 'eventId'],
+    });
+  }
+
+  getEventParticipants(user: User) {
+    return this.participationRepository.find({
+      where: { eventId: user.id },
+      relations: ['user'],
+      select: ['userId', 'eventId'],
     });
   }
 }
