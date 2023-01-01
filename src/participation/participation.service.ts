@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateParticipationDto } from './dto/create-participation.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Evente } from 'src/eventes/entities/evente.entity';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Injectable()
 export class ParticipationService {
@@ -24,19 +25,28 @@ export class ParticipationService {
     return await this.participationRepository.save(participation);
   }
 
-  async getUserParticipations(user: User): Promise<Participation[]> {
+  async getUserParticipations(
+    user: User,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<Participation[]> {
+    const { limit, offset } = paginationQuery;
     return await this.participationRepository.find({
       where: { userId: user.id },
       relations: ['evente'],
       select: ['userId', 'eventId'],
+      skip: offset,
+      take: limit,
     });
   }
 
-  getEventParticipants(user: User) {
+  getEventParticipants(user: User, paginationQuery: PaginationQueryDto) {
+    const { limit, offset } = paginationQuery;
     return this.participationRepository.find({
       where: { eventId: user.id },
       relations: ['user'],
       select: ['userId', 'eventId'],
+      skip: offset,
+      take: limit,
     });
   }
 }

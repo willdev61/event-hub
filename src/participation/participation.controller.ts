@@ -6,6 +6,7 @@ import {
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { ParticipationService } from './participation.service';
 import { CreateParticipationDto } from './dto/create-participation.dto';
@@ -13,6 +14,7 @@ import { CurrentUser, Roles } from 'src/auth/decorators';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { UserRole } from 'src/enums/role.enum';
+import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 
 @Controller('participation')
 export class ParticipationController {
@@ -30,14 +32,27 @@ export class ParticipationController {
   @Get('/get-user-participations')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
-  getUserParticipations(@CurrentUser() user: User) {
-    return this.participationService.getUserParticipations(user);
+  getUserParticipations(
+    @CurrentUser() user: User,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    return this.participationService.getUserParticipations(
+      user,
+      paginationQuery,
+    );
   }
 
   @Get('/get-event-participants')
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
-  getEventParticipants(@CurrentUser() user: User) {
-    return this.participationService.getEventParticipants(user);
+  @Roles(UserRole.Organizer, UserRole.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  getEventParticipants(
+    @CurrentUser() user: User,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    return this.participationService.getEventParticipants(
+      user,
+      paginationQuery,
+    );
   }
 }
