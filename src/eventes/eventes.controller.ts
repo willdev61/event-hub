@@ -23,7 +23,7 @@ import { User } from 'src/users/entities/user.entity';
 export class EventesController {
   constructor(private readonly eventesService: EventesService) {}
 
-  @Post()
+  @Post('create-events')
   @Roles(UserRole.Organizer)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async createEvent(
@@ -50,13 +50,13 @@ export class EventesController {
     return this.eventesService.getOrganizerEvents(paginationQuery, user);
   }
 
-  @Get(':id')
+  @Get('get-one/:id')
   @UseGuards(JwtAuthGuard)
   async findOneEvent(@Param('id') id: string): Promise<Evente> {
     return await this.eventesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update-event/:id')
   @Roles(UserRole.Organizer)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async updateEvent(
@@ -67,7 +67,7 @@ export class EventesController {
     return await this.eventesService.updateEvent(+id, updateEventeDto, user);
   }
 
-  @Delete(':id')
+  @Delete('delete-event/:id')
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
@@ -75,7 +75,7 @@ export class EventesController {
     return await this.eventesService.removeEvent(id);
   }
 
-  @Delete('desactivate/:id')
+  @Delete('desactivate-event/:id')
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
@@ -83,7 +83,7 @@ export class EventesController {
     return await this.eventesService.softDeleteEvent(id);
   }
 
-  @Get('restore/:id')
+  @Get('restore-evente/:id')
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async recoverEvent(@Param('id') id: string) {
