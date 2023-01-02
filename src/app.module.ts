@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ParticipationModule } from './participation/participation.module';
+import { DefaultAdminModule } from 'nestjs-admin';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ParticipationModule } from './participation/participation.module';
     }),
     AuthModule,
     ParticipationModule,
+    DefaultAdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
