@@ -16,7 +16,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { AuthService } from 'src/auth/auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators';
@@ -28,12 +27,7 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  // @Post()
-  // async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-  //   return await this.authService.postSignup(createUserDto);
-  // }
-
-  @Get('/get-users')
+  @Get('/get-all-users')
   @UseInterceptors(ClassSerializerInterceptor)
   @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
@@ -41,14 +35,14 @@ export class UsersController {
     return await this.usersService.getAllUsers(paginationQuery);
   }
 
-  @Get(':id')
+  @Get('get-one-user:id')
   @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
   }
 
-  @Patch(':id')
+  @Patch('updtae-user-info/:id')
   @UseGuards(JwtAuthGuard)
   async updateUser(
     @Param('id') id: string,
@@ -57,20 +51,20 @@ export class UsersController {
     return await this.usersService.updateUser(+id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete('delete-user/:id')
   @UseGuards(JwtAuthGuard)
   async removeUserAccount(@Param('id') id: string) {
     return await this.usersService.removeUser(id);
   }
 
-  @Delete('desactivate/:id')
+  @Delete('desactivate-user/:id')
   @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   async desactivateUserAccount(@Param('id') id: string) {
     return await this.usersService.softDeleteUser(id);
   }
 
-  @Get('restore/:id')
+  @Get('restore-user/:id')
   @Roles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   async recoverUserAccount(@Param('id') id: string) {
