@@ -37,9 +37,10 @@ export class AuthService {
     });
 
     try {
-      return this.userRepository.save(user);
+      const newUser = this.userRepository.save(user);
+      return newUser;
     } catch (error) {
-      throw new ConflictException(error.message);
+      throw new ConflictException(`Cet Utilisateur existe déja!!!`);
     }
   }
 
