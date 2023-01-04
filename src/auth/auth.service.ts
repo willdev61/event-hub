@@ -37,8 +37,7 @@ export class AuthService {
     });
 
     try {
-      const newUser = this.userRepository.save(user);
-      return newUser;
+      return this.userRepository.save(user);
     } catch (error) {
       throw new ConflictException(`Cet Utilisateur existe déja!!!`);
     }
@@ -60,6 +59,8 @@ export class AuthService {
       const jwt = this.jwtService.sign(payload);
       return {
         access_token: jwt,
+        username: user.username,
+        email: user.email,
       };
     } else throw new UnauthorizedException('Mot de passe invalide');
   }
