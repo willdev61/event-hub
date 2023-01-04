@@ -5,14 +5,31 @@ import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { UserRole } from 'src/enums/role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly authService: AuthService,
   ) {}
 
+  async createSuperAdmin() {
+    const user = await this.userRepository.findOne({
+      where: { email: 'admin@eventhub.com' },
+    });
+    if (!user) {
+      await this.authService.postSignup({
+        username: 'SuperAdmin',
+        email: 'admin@eventhub.com',
+        contacts: '1235667009',
+        password: 'azertyuiop',
+        role: UserRole.SuperAdmin,
+      });
+    }
+  }
   async getAllUsers(paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
     return await this.userRepository.find({
