@@ -39,33 +39,22 @@ export class ParticipationService {
     });
   }
 
-  // getEventParticipants(
-  //   { eventId }: CreateParticipationDto,
-  //   user: User,
-  //   paginationQuery: PaginationQueryDto,
-  // ) {
-  //   const { limit, offset } = paginationQuery;
-  //   const users = this.participationRepository.find({
-  //     where: { eventId: eventId, userId: user.id },
-  //     relations: ['user', 'evente'],
-  //     select: ['userId', 'eventId'],
-  //     skip: offset,
-  //     take: limit,
-  //   });
-  //   if (users) {
-  //     return users;
-  //   } else {
-  //     throw new NotFoundException();
-  //   }
-  // }
-  getEventParticipants(user: User, paginationQuery: PaginationQueryDto) {
+  async getEventParticipants(
+    id: number,
+    user: User,
+    paginationQuery: PaginationQueryDto,
+  ) {
     const { limit, offset } = paginationQuery;
-    return this.participationRepository.find({
-      // where: { eventId:  },
+    const participants = await this.participationRepository.find({
+      where: { eventId: id },
       relations: ['user'],
       select: ['eventId'],
       skip: offset,
       take: limit,
     });
+    if (!participants) {
+      throw new NotFoundException(`L'évenement d'id ${id} n'existe pas.`);
+    }
+    return participants;
   }
 }

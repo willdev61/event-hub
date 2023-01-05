@@ -7,6 +7,7 @@ import {
   ClassSerializerInterceptor,
   UseInterceptors,
   Query,
+  Param,
 } from '@nestjs/common';
 import { ParticipationService } from './participation.service';
 import { CreateParticipationDto } from './dto/create-participation.dto';
@@ -42,15 +43,17 @@ export class ParticipationController {
     );
   }
 
-  @Post('/get-event-participants')
+  @Get('/get-event-participants/:id')
   @UseInterceptors(ClassSerializerInterceptor)
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getEventParticipants(
+    @Param('id') id: string,
     @CurrentUser() user: User,
     @Query() paginationQuery: PaginationQueryDto,
   ) {
     return this.participationService.getEventParticipants(
+      +id,
       user,
       paginationQuery,
     );
