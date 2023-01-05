@@ -59,8 +59,7 @@ export class AuthService {
       const jwt = this.jwtService.sign(payload);
       return {
         access_token: jwt,
-        username: user.username,
-        email: user.email,
+        payload,
       };
     } else throw new UnauthorizedException('Mot de passe invalide');
   }
