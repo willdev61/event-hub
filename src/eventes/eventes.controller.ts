@@ -41,7 +41,7 @@ export class EventesController {
   }
 
   @Get('get-organizer-events')
-  @Roles(UserRole.Organizer)
+  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getOrganizerEvents(
     @Query() paginationQuery: PaginationQueryDto,

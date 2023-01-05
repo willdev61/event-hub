@@ -42,7 +42,7 @@ export class ParticipationController {
     );
   }
 
-  @Get('/get-event-participants')
+  @Post('/get-event-participants')
   @UseInterceptors(ClassSerializerInterceptor)
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)

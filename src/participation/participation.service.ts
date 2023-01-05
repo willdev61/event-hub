@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateParticipationDto } from './dto/create-participation.dto';
 import { User } from 'src/users/entities/user.entity';
-import { Evente } from 'src/eventes/entities/evente.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { NotFoundException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class ParticipationService {
@@ -39,12 +39,31 @@ export class ParticipationService {
     });
   }
 
+  // getEventParticipants(
+  //   { eventId }: CreateParticipationDto,
+  //   user: User,
+  //   paginationQuery: PaginationQueryDto,
+  // ) {
+  //   const { limit, offset } = paginationQuery;
+  //   const users = this.participationRepository.find({
+  //     where: { eventId: eventId, userId: user.id },
+  //     relations: ['user', 'evente'],
+  //     select: ['userId', 'eventId'],
+  //     skip: offset,
+  //     take: limit,
+  //   });
+  //   if (users) {
+  //     return users;
+  //   } else {
+  //     throw new NotFoundException();
+  //   }
+  // }
   getEventParticipants(user: User, paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
     return this.participationRepository.find({
-      where: { eventId: user.id },
+      // where: { eventId:  },
       relations: ['user'],
-      select: ['userId', 'eventId'],
+      select: ['eventId'],
       skip: offset,
       take: limit,
     });

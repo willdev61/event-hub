@@ -15,29 +15,26 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { AuthService } from 'src/auth/auth.service';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators';
+import { RolesGuard } from 'src/auth/guards';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get('/get-all-users')
   @UseInterceptors(ClassSerializerInterceptor)
-  @Roles(UserRole.Admin)
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async getAllUsers(@Query() paginationQuery: PaginationQueryDto) {
     return await this.usersService.getAllUsers(paginationQuery);
   }
 
   @Get('get-one-user:id')
   @Roles(UserRole.Admin)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
   }
@@ -58,15 +55,15 @@ export class UsersController {
   }
 
   @Delete('desactivate-user/:id')
-  @Roles(UserRole.Admin)
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async desactivateUserAccount(@Param('id') id: string) {
     return await this.usersService.softDeleteUser(id);
   }
 
   @Get('restore-user/:id')
-  @Roles(UserRole.Admin)
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async recoverUserAccount(@Param('id') id: string) {
     return await this.usersService.restoreUser(id);
   }
