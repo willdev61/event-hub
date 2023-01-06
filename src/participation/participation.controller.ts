@@ -61,7 +61,7 @@ export class ParticipationController {
   }
 
   @Post('/cancel-participation/:id')
-  @Roles(UserRole.User)
+  @Roles(UserRole.User, UserRole.Organizer)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async cancelParticipation(@Param('id') id: string) {
     return await this.participationService.deleteParticipation(+id);
