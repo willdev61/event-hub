@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRole } from 'src/enums/role.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -49,10 +50,13 @@ export class UsersService {
   }
 
   async updateUser({ id }: User, updateUserDto: UpdateUserDto) {
+    const { password } = updateUserDto;
+    const hash = await bcrypt.hash(password, 10);
     const newUser = await this.userRepository.preload({
       id: id,
       ...updateUserDto,
     });
+    newUser.password = hash;
     if (!newUser) {
       throw new NotFoundException(`L'utilisateur d'id ${id} non existant`);
     }
