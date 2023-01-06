@@ -67,7 +67,7 @@ export class ParticipationService {
 
   async deleteParticipation(id: number) {
     const participation = await this.participationRepository.find({
-      where: { eventId: id },
+      where: { id: id },
     });
     if (participation) {
       return this.participationRepository.remove(participation);
