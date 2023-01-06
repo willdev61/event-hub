@@ -5,7 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateParticipationDto } from './dto/create-participation.dto';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import {
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 
 @Injectable()
 export class ParticipationService {
@@ -21,7 +24,9 @@ export class ParticipationService {
     const participation = this.participationRepository.create();
     participation.eventId = data.eventId;
     participation.userId = user.id;
-
+    if (participation) {
+      throw new ConflictException(`Participation already exists!!`);
+    }
     return await this.participationRepository.save(participation);
   }
 
@@ -30,20 +35,24 @@ export class ParticipationService {
     paginationQuery: PaginationQueryDto,
   ): Promise<Participation[]> {
     const { limit, offset } = paginationQuery;
-    return await this.participationRepository.find({
+    const participations = await this.participationRepository.find({
       where: { userId: user.id },
       relations: ['evente'],
       select: ['userId', 'eventId'],
       skip: offset,
       take: limit,
     });
+    if (!participations) {
+      throw new NotFoundException(`Vous n'avez pas d'évenements!!`);
+    }
+    return participations;
   }
 
   async getEventParticipants(
     id: number,
     user: User,
     paginationQuery: PaginationQueryDto,
-  ) {
+  ): Promise<Participation[]> {
     const { limit, offset } = paginationQuery;
     const participants = await this.participationRepository.find({
       where: { eventId: id },
@@ -56,5 +65,14 @@ export class ParticipationService {
       throw new NotFoundException(`L'évenement d'id ${id} n'existe pas.`);
     }
     return participants;
+  }
+
+  async deleteParticipation(id: number) {
+    const participation = await this.participationRepository.find({
+      where: { eventId: id },
+    });
+    if (participation) {
+      return this.participationRepository.remove(participation);
+    }
   }
 }

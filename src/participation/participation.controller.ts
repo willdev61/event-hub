@@ -16,6 +16,7 @@ import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { UserRole } from 'src/enums/role.enum';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { Participation } from './entities/participation.entity';
 
 @Controller('participation')
 export class ParticipationController {
@@ -23,21 +24,21 @@ export class ParticipationController {
 
   @Post('/add-new-participation')
   @UseGuards(JwtAuthGuard)
-  addNewParticipation(
+  async addNewParticipation(
     @Body() data: CreateParticipationDto,
     @CurrentUser() user: User,
-  ) {
-    return this.participationService.addNewParticipation(data, user);
+  ): Promise<Participation> {
+    return await this.participationService.addNewParticipation(data, user);
   }
 
   @Get('/get-user-participations')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
-  getUserParticipations(
+  async getUserParticipations(
     @CurrentUser() user: User,
     @Query() paginationQuery: PaginationQueryDto,
-  ) {
-    return this.participationService.getUserParticipations(
+  ): Promise<Participation[]> {
+    return await this.participationService.getUserParticipations(
       user,
       paginationQuery,
     );
@@ -47,15 +48,22 @@ export class ParticipationController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Roles(UserRole.Organizer, UserRole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getEventParticipants(
+  async getEventParticipants(
     @Param('id') id: string,
     @CurrentUser() user: User,
     @Query() paginationQuery: PaginationQueryDto,
-  ) {
-    return this.participationService.getEventParticipants(
+  ): Promise<Participation[]> {
+    return await this.participationService.getEventParticipants(
       +id,
       user,
       paginationQuery,
     );
+  }
+
+  @Post('/cancel-participation/:id')
+  @Roles(UserRole.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async cancelParticipation(@Param() id: string) {
+    return await this.participationService.deleteParticipation(+id);
   }
 }
