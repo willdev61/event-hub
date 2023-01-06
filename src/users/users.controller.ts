@@ -40,6 +40,7 @@ export class UsersController {
   }
 
   @Patch('update-user-info')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async updateUser(
     @CurrentUser() user: User,
