@@ -16,7 +16,7 @@ export class User extends TimestampEntities {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column()
   readonly username: string;
 
   @Column({ unique: true })
@@ -30,7 +30,7 @@ export class User extends TimestampEntities {
   password: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.User })
-  role: UserRole;
+  readonly role: UserRole;
 
   @JoinTable()
   @OneToMany((type) => Evente, (evente) => evente.user)

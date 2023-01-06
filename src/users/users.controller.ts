@@ -17,7 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from 'src/enums/role.enum';
-import { Roles } from 'src/auth/decorators';
+import { CurrentUser, Roles } from 'src/auth/decorators';
 import { RolesGuard } from 'src/auth/guards';
 
 @Controller('users')
@@ -33,19 +33,19 @@ export class UsersController {
   }
 
   @Get('get-one-user:id')
-  @Roles(UserRole.Admin)
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
   }
 
-  @Patch('updtae-user-info/:id')
+  @Patch('update-user-info')
   @UseGuards(JwtAuthGuard)
   async updateUser(
-    @Param('id') id: string,
+    @CurrentUser() user: User,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return await this.usersService.updateUser(+id, updateUserDto);
+    return await this.usersService.updateUser(user, updateUserDto);
   }
 
   @Delete('delete-user/:id')

@@ -48,15 +48,15 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.preload({
-      id: +id,
+  async updateUser({ id }: User, updateUserDto: UpdateUserDto) {
+    const newUser = await this.userRepository.preload({
+      id: id,
       ...updateUserDto,
     });
-    if (!user) {
+    if (!newUser) {
       throw new NotFoundException(`L'utilisateur d'id ${id} non existant`);
     }
-    return this.userRepository.save(user);
+    return this.userRepository.save(newUser);
   }
 
   async removeUser(id: string) {
