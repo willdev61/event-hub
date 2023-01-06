@@ -38,7 +38,7 @@ export class ParticipationService {
     const participations = await this.participationRepository.find({
       where: { userId: user.id },
       relations: ['evente'],
-      select: ['userId', 'eventId'],
+      select: ['eventId', 'id'],
       skip: offset,
       take: limit,
     });
