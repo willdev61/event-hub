@@ -19,7 +19,7 @@ export class User extends TimestampEntities {
   @Column()
   readonly username: string;
 
-  @Column({ unique: true })
+  @Column()
   readonly email: string;
 
   @Column()
