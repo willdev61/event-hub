@@ -24,9 +24,7 @@ export class ParticipationService {
     const participation = this.participationRepository.create();
     participation.eventId = data.eventId;
     participation.userId = user.id;
-    if (participation) {
-      throw new ConflictException(`Participation already exists!!`);
-    }
+
     return await this.participationRepository.save(participation);
   }
 
