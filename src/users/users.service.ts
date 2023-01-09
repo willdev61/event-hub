@@ -51,18 +51,29 @@ export class UsersService {
 
   async updateUser({ id }: User, updateUserDto: UpdateUserDto) {
     const { password } = updateUserDto;
-    const hash = await bcrypt.hash(password, 10);
-    const newUser = await this.userRepository.preload({
-      id: id,
-      ...updateUserDto,
-    });
-    newUser.password = hash;
-    if (!newUser) {
-      throw new NotFoundException(`L'utilisateur d'id ${id} non existant`);
+    if (password) {
+      const hash = await bcrypt.hash(password, 10);
+      const newUser = await this.userRepository.preload({
+        id: id,
+        ...updateUserDto,
+        password: hash,
+      });
+      if (!newUser) {
+        throw new NotFoundException(`L'utilisateur d'id ${id} non existant`);
+      }
+      return this.userRepository.save(newUser);
     }
-    return this.userRepository.save(newUser);
+    if (!password) {
+      const newUser = await this.userRepository.preload({
+        id: id,
+        ...updateUserDto,
+      });
+      if (!newUser) {
+        throw new NotFoundException(`L'utilisateur d'id ${id} non existant`);
+      }
+      return this.userRepository.save(newUser);
+    }
   }
-
   async removeUser(id: string) {
     const event = await this.getOneUser(id);
     return this.userRepository.remove(event);
