@@ -47,15 +47,13 @@ export class EventesService {
   }
 
   getEventByFilter(
-    filerDto: FilterEventDto,
-    paginationQuery: PaginationQueryDto,
+    { title, status }: FilterEventDto, // paginationQuery: PaginationQueryDto,
   ) {
-    const { limit, offset } = paginationQuery;
-    const { status } = filerDto;
+    // const { limit, offset } = paginationQuery;
     const events = this.eventeRepository.find({
-      where: { status: status },
-      skip: offset,
-      take: limit,
+      where: { status: status, title: title },
+      // skip: offset,
+      // take: limit,
     });
     return events;
   }

@@ -53,11 +53,11 @@ export class EventesController {
 
   @Get()
   getEventFilterByStatus(
-    @Query() filerDto: FilterEventDto,
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query() filterDto: FilterEventDto,
+    // @Query() paginationQuery: PaginationQueryDto,
   ) {
-    console.log(filerDto);
-    return this.eventesService.getEventByFilter(filerDto, paginationQuery);
+    console.log(filterDto);
+    return this.eventesService.getEventByFilter(filterDto);
   }
 
   @Get('get-one/:id')
