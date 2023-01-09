@@ -3,7 +3,7 @@ import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
 import { Evente } from './entities/evente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 

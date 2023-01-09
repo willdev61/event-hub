@@ -23,7 +23,8 @@ export class ParticipationController {
   constructor(private readonly participationService: ParticipationService) {}
 
   @Post('/add-new-participation')
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async addNewParticipation(
     @Body() data: CreateParticipationDto,
     @CurrentUser() user: User,
@@ -32,8 +33,9 @@ export class ParticipationController {
   }
 
   @Get('/get-user-participations')
+  @Roles(UserRole.User)
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async getUserParticipations(
     @CurrentUser() user: User,
     @Query() paginationQuery: PaginationQueryDto,
