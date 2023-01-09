@@ -18,6 +18,7 @@ import { Evente } from './entities/evente.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from '../enums/role.enum';
 import { User } from 'src/users/entities/user.entity';
+import { FilterEventDto } from './dto/filter-event.dto';
 
 @Controller('events')
 export class EventesController {
@@ -48,6 +49,15 @@ export class EventesController {
     @CurrentUser() user: User,
   ) {
     return this.eventesService.getOrganizerEvents(paginationQuery, user);
+  }
+
+  @Get()
+  getEventFilterByStatus(
+    @Query() filerDto: FilterEventDto,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    console.log(filerDto);
+    return this.eventesService.getEventByFilter(filerDto, paginationQuery);
   }
 
   @Get('get-one/:id')

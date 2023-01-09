@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
+import { FilterEventDto } from './dto/filter-event.dto';
 
 @Injectable()
 export class EventesService {
@@ -43,6 +44,20 @@ export class EventesService {
       skip: offset,
       take: limit,
     });
+  }
+
+  getEventByFilter(
+    filerDto: FilterEventDto,
+    paginationQuery: PaginationQueryDto,
+  ) {
+    const { limit, offset } = paginationQuery;
+    const { status } = filerDto;
+    const events = this.eventeRepository.find({
+      where: { status: status },
+      skip: offset,
+      take: limit,
+    });
+    return events;
   }
 
   async findOne(id: string) {
