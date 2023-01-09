@@ -35,10 +35,8 @@ export class EventesController {
   }
 
   @Get('get-all-events')
-  async getAllEvents(
-    @Query() paginationQuery: PaginationQueryDto,
-  ): Promise<Evente[]> {
-    return await this.eventesService.getAllEvents(paginationQuery);
+  async getAllEvents(@Query() filterDto: FilterEventDto): Promise<Evente[]> {
+    return this.eventesService.getEventByFilter(filterDto);
   }
 
   @Get('get-organizer-events')

@@ -1,4 +1,4 @@
-import { IsOptional, IsPositive, Min } from 'class-validator';
+import { IsOptional, Min } from 'class-validator';
 
 export class PaginationQueryDto {
   @IsOptional()
