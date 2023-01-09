@@ -49,8 +49,6 @@ export class EventesService {
   getEventByFilter(
     { title, status, limit, offset }: FilterEventDto, // paginationQuery: PaginationQueryDto,
   ) {
-    console.log('Filter ====>', status);
-
     const events = this.eventeRepository.find({
       where: { status, title },
       skip: offset,
