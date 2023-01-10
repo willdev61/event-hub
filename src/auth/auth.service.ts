@@ -52,7 +52,7 @@ export class AuthService {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
       const payload = {
-        username: user.username,
+        id: user.id,
         email: user.email,
         role: user.role,
       };
