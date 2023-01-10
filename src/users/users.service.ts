@@ -62,6 +62,7 @@ export class UsersService {
     return await this.userRepository.find({
       skip: offset,
       take: limit,
+      withDeleted: true,
     });
   }
   async findOne(email: string) {
@@ -118,12 +119,6 @@ export class UsersService {
 
   async softDeleteUser(id: string) {
     return await this.userRepository.softDelete(id);
-  }
-
-  getDesactivateUser() {
-    return this.userRepository.find({
-      withDeleted: true,
-    });
   }
 
   async restoreUser(id: string) {
