@@ -27,6 +27,7 @@ export class AuthController {
   }
 
   @Post('/connexion')
+  @UseInterceptors(ClassSerializerInterceptor)
   login(@Body() user: LoginDto) {
     return this.authService.postLogin(user);
   }
