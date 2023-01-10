@@ -19,6 +19,7 @@ import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from 'src/enums/role.enum';
 import { CurrentUser, Roles } from 'src/auth/decorators';
 import { RolesGuard } from 'src/auth/guards';
+import { userInfo } from 'os';
 
 @Controller('users')
 export class UsersController {
@@ -37,6 +38,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getOneUser(@Param('id') id: string) {
     return await this.usersService.getOneUser(id);
+  }
+
+  @Get('get-desactivated-user/:id')
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  getDesactivatedUser(@Param('id') id: string) {
+    return this.usersService.getDesactivateUser(+id);
   }
 
   @Patch('update-user-info')

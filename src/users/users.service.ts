@@ -85,6 +85,12 @@ export class UsersService {
     }
     return user;
   }
+  getDesactivateUser(id: number) {
+    return this.userRepository.find({
+      where: { id },
+      withDeleted: true,
+    });
+  }
 
   async updateUser({ id }: User, updateUserDto: UpdateUserDto) {
     const { password } = updateUserDto;

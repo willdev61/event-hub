@@ -70,17 +70,17 @@ export class EventesService {
   async updateEvent(
     id: number,
     updateEventeDto: UpdateEventeDto,
-    user,
+    user: User,
   ): Promise<Evente> {
     const event = await this.eventeRepository.preload({
       id: +id,
       ...updateEventeDto,
+      ...user,
     });
     if (!event) {
       throw new NotFoundException(`L'évenement d'id ${id} n'existe pas.`);
     }
-    event.user = user;
-    return this.eventeRepository.save(event, user);
+    return this.eventeRepository.save(event);
   }
 
   async removeEvent(id: string) {
