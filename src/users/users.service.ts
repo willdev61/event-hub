@@ -85,12 +85,6 @@ export class UsersService {
     }
     return user;
   }
-  getDesactivateUser(id: number) {
-    return this.userRepository.find({
-      where: { id },
-      withDeleted: true,
-    });
-  }
 
   async updateUser({ id }: User, updateUserDto: UpdateUserDto) {
     const { password } = updateUserDto;
@@ -124,6 +118,18 @@ export class UsersService {
 
   async softDeleteUser(id: string) {
     return await this.userRepository.softDelete(id);
+  }
+
+  getDesactivateUser(id: number) {
+    if (id) {
+      return this.userRepository.find({
+        where: { id },
+        withDeleted: true,
+      });
+    }
+    return this.userRepository.find({
+      withDeleted: true,
+    });
   }
 
   async restoreUser(id: string) {
