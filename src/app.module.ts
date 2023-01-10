@@ -24,8 +24,9 @@ import { UsersModule } from './users/users.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    AuthModule,
+
     ParticipationModule,
+    AuthModule,
     UsersModule,
   ],
   controllers: [AppController],

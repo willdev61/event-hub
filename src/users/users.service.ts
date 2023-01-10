@@ -2,19 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import {
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
-import { AuthService } from 'src/auth/auth.service';
 import { UserRole } from 'src/enums/role.enum';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly authService: AuthService,
   ) {}
 
   async createSuperAdmin() {
@@ -22,7 +24,7 @@ export class UsersService {
       where: { email: 'admin@eventhub.com' },
     });
     if (!user) {
-      await this.authService.postSignup({
+      await this.createUser({
         username: 'SuperAdmin',
         email: 'admin@eventhub.com',
         contacts: '1235667009',
@@ -31,12 +33,47 @@ export class UsersService {
       });
     }
   }
+
+  createUserAccount(userData: CreateUserDto) {
+    return this.createUser({ ...userData, role: UserRole.User });
+  }
+
+  createOrganizerAccount(organizerData: CreateUserDto) {
+    return this.createUser({ ...organizerData, role: UserRole.Organizer });
+  }
+
+  async createUser(userData: CreateUserDto): Promise<User> {
+    const { password } = userData;
+    const hash = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({
+      ...userData,
+      password: hash,
+    });
+
+    try {
+      return this.userRepository.save(user);
+    } catch (error) {
+      throw new ConflictException(`Cet Utilisateur existe déja!!!`);
+    }
+  }
+
   async getAllUsers(paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
     return await this.userRepository.find({
       skip: offset,
       take: limit,
     });
+  }
+  async findOne(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+    });
+    if (!user) {
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} non existant`,
+      );
+    }
+    return user;
   }
 
   async getOneUser(id: string) {

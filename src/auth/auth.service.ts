@@ -10,44 +10,41 @@ import {
 } from '@nestjs/common/exceptions';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt/dist';
-import { UserRole } from 'src/enums/role.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
-  createUserAccount(userData: SignupDto) {
-    return this.postSignup({ ...userData, role: UserRole.User });
-  }
+  // createUserAccount(userData: SignupDto) {
+  //   return this.postSignup({ ...userData, role: UserRole.User });
+  // }
 
-  createOrganizerAccount(organizerData: SignupDto) {
-    return this.postSignup({ ...organizerData, role: UserRole.Organizer });
-  }
+  // createOrganizerAccount(organizerData: SignupDto) {
+  //   return this.postSignup({ ...organizerData, role: UserRole.Organizer });
+  // }
 
-  async postSignup(userData: SignupDto): Promise<User> {
-    const { password } = userData;
-    const hash = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({
-      ...userData,
-      password: hash,
-    });
+  // async postSignup(userData: SignupDto): Promise<User> {
+  //   const { password } = userData;
+  //   const hash = await bcrypt.hash(password, 10);
+  //   const user = this.userRepository.create({
+  //     ...userData,
+  //     password: hash,
+  //   });
 
-    try {
-      return this.userRepository.save(user);
-    } catch (error) {
-      throw new ConflictException(`Cet Utilisateur existe déja!!!`);
-    }
-  }
+  //   try {
+  //     return this.userRepository.save(user);
+  //   } catch (error) {
+  //     throw new ConflictException(`Cet Utilisateur existe déja!!!`);
+  //   }
+  // }
 
   async postLogin(userData: LoginDto) {
     const { email, password } = userData;
-    const user = await this.userRepository.findOne({
-      where: { email: email },
-    });
+    const user = await this.usersService.findOne(email);
     if (!user) throw new NotFoundException('Utilisateur non existant');
     const match = await bcrypt.compare(password, user.password);
     if (match) {
