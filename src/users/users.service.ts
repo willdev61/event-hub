@@ -120,13 +120,7 @@ export class UsersService {
     return await this.userRepository.softDelete(id);
   }
 
-  getDesactivateUser(id: number) {
-    if (id) {
-      return this.userRepository.find({
-        where: { id },
-        withDeleted: true,
-      });
-    }
+  getDesactivateUser() {
     return this.userRepository.find({
       withDeleted: true,
     });

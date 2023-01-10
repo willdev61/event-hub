@@ -40,11 +40,11 @@ export class UsersController {
     return await this.usersService.getOneUser(id);
   }
 
-  @Get('get-desactivated-user/:id')
+  @Get('get-desactivated-user')
   @Roles(UserRole.Admin, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getDesactivatedUser(@Param('id') id: string) {
-    return this.usersService.getDesactivateUser(+id);
+  getDesactivatedUser() {
+    return this.usersService.getDesactivateUser();
   }
 
   @Patch('update-user-info')
