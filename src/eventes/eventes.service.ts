@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventeDto } from './dto/create-evente.dto';
 import { UpdateEventeDto } from './dto/update-evente.dto';
 import { Evente } from './entities/evente.entity';
@@ -21,17 +25,29 @@ export class EventesService {
   ): Promise<Evente> {
     const event = this.eventeRepository.create({ ...createEventeDto });
     event.user = user;
-    return this.eventeRepository.save(event, user);
+    return await this.eventeRepository.save(event, user);
   }
 
-  async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
-    const { limit, offset } = paginationQuery;
-
-    return this.eventeRepository.find({
-      skip: offset,
-      take: limit,
+  async publishEvent(id: number) {
+    const event = await this.eventeRepository.findOne({
+      where: { id: id, isPublished: false },
     });
+    if (event) {
+      event.isPublished = true;
+      return this.eventeRepository.save(event);
+    }
+    throw new BadRequestException(`L'évènement d'id ${id} a déja été publié.`);
   }
+
+  // async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
+  //   const { limit, offset } = paginationQuery;
+
+  //   return this.eventeRepository.find({
+  //     where: { isPublished: true },
+  //     skip: offset,
+  //     take: limit,
+  //   });
+  // }
 
   getOrganizerEvents(
     paginationQuery: PaginationQueryDto,
@@ -46,11 +62,11 @@ export class EventesService {
     });
   }
 
-  getEventByFilter(
+  async getEventByFilter(
     { title, status, limit, offset }: FilterEventDto, // paginationQuery: PaginationQueryDto,
-  ) {
-    const events = this.eventeRepository.find({
-      where: { status, title },
+  ): Promise<Evente[]> {
+    const events = await this.eventeRepository.find({
+      where: { status, title, isPublished: true },
       skip: offset,
       take: limit,
     });
@@ -59,7 +75,7 @@ export class EventesService {
 
   async findOne(id: string) {
     const event = await this.eventeRepository.findOne({
-      where: { id: parseInt(id) },
+      where: { id: +id },
     });
     if (!event) {
       throw new NotFoundException(`Event #${id} not found`);

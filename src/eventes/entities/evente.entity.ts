@@ -36,6 +36,9 @@ export class Evente extends TimestampEntities {
   @Column({ default: true })
   status: boolean;
 
+  @Column({ default: false })
+  isPublished: boolean;
+
   @ManyToOne((type) => User, (user) => user.eventes)
   user: User;
 

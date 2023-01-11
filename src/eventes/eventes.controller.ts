@@ -34,6 +34,11 @@ export class EventesController {
     return await this.eventesService.createEvent(createEventeDto, user);
   }
 
+  @Post('publish-event/:id')
+  async publishEvent(@Param('id') id: string) {
+    return this.eventesService.publishEvent(+id);
+  }
+
   @Get('get-all-events')
   async getAllEvents(@Query() filterDto: FilterEventDto): Promise<Evente[]> {
     return this.eventesService.getEventByFilter(filterDto);
