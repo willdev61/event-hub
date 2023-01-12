@@ -42,20 +42,18 @@ export class EventesController {
   @Get('get-organizer-events')
   @Roles(UserRole.Organizer, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getOrganizerEvents(
+  async getOrganizerEvents(
     @Query() paginationQuery: PaginationQueryDto,
     @CurrentUser() user: User,
-  ) {
-    return this.eventesService.getOrganizerEvents(paginationQuery, user);
+  ): Promise<Evente[]> {
+    return await this.eventesService.getOrganizerEvents(paginationQuery, user);
   }
 
-  @Get()
-  getEventFilterByStatus(
-    @Query() filterDto: FilterEventDto,
-    // @Query() paginationQuery: PaginationQueryDto,
-  ) {
-    console.log(filterDto);
-    return this.eventesService.getEventByFilter(filterDto);
+  @Get('get-desactivate-event')
+  async getDesactivateEvents(
+    @Query() paginationQuery: PaginationQueryDto,
+  ): Promise<Evente[]> {
+    return await this.eventesService.getDesactivateEvents(paginationQuery);
   }
 
   @Post('publish-event/:id')

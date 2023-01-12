@@ -28,21 +28,24 @@ export class EventesService {
     return await this.eventeRepository.save(event, user);
   }
 
-  async getAllEvents({ limit, offset }: FilterEventDto): Promise<Evente[]> {
+  async getDesactivateEvents({
+    limit,
+    offset,
+  }: FilterEventDto): Promise<Evente[]> {
     return this.eventeRepository.find({
-      where: { isPublished: true },
+      withDeleted: true,
       skip: offset,
       take: limit,
     });
   }
 
-  getOrganizerEvents(
+  async getOrganizerEvents(
     paginationQuery: PaginationQueryDto,
     { id }: User,
   ): Promise<Evente[]> {
     const { limit, offset } = paginationQuery;
 
-    return this.eventeRepository.find({
+    return await this.eventeRepository.find({
       where: { user: { id } },
       skip: offset,
       take: limit,
