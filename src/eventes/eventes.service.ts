@@ -91,7 +91,6 @@ export class EventesService {
     const event = await this.eventeRepository.preload({
       id: +id,
       ...updateEventeDto,
-      ...user,
     });
     if (!event) {
       throw new NotFoundException(`L'évenement d'id ${id} n'existe pas.`);
