@@ -40,7 +40,7 @@ export class EventesController {
   }
 
   @Get('get-organizer-events')
-  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
+  @Roles(UserRole.Organizer)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getOrganizerEvents(
     @Query() paginationQuery: PaginationQueryDto,
@@ -50,6 +50,8 @@ export class EventesController {
   }
 
   @Get('get-desactivate-event')
+  @Roles(UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async getDesactivateEvents(
     @Query() paginationQuery: PaginationQueryDto,
   ): Promise<Evente[]> {
@@ -57,16 +59,22 @@ export class EventesController {
   }
 
   @Post('publish-event/:id')
+  @Roles(UserRole.Organizer)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async publishEvent(@Param('id') id: string) {
     return this.eventesService.publishEvent(+id);
   }
 
   @Post('unpublish-event/:id')
+  @Roles(UserRole.Organizer)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async unPublishEvent(@Param('id') id: string) {
     return this.eventesService.unPublishEvent(+id);
   }
 
   @Get('get-event-by-admin/:id')
+  @Roles(UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getOrganizerEventsByAdmin(
     @Query() paginationQuery: PaginationQueryDto,
     @Param('id') id: string,
@@ -92,7 +100,7 @@ export class EventesController {
   }
 
   @Delete('delete-event/:id')
-  @Roles(UserRole.Organizer, UserRole.Admin)
+  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
   async removeEvent(@Param('id') id: string) {
@@ -100,7 +108,7 @@ export class EventesController {
   }
 
   @Delete('desactivate-event/:id')
-  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
+  @Roles(UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
   async desactivateEvent(@Param('id') id: string) {
@@ -108,7 +116,7 @@ export class EventesController {
   }
 
   @Get('restore-evente/:id')
-  @Roles(UserRole.Organizer, UserRole.Admin)
+  @Roles(UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async recoverEvent(@Param('id') id: string) {
     return await this.eventesService.restoreEvent(id);

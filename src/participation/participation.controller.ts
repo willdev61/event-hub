@@ -48,7 +48,7 @@ export class ParticipationController {
 
   @Get('/get-event-participants/:id')
   @UseInterceptors(ClassSerializerInterceptor)
-  @Roles(UserRole.Organizer, UserRole.Admin)
+  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getEventParticipants(
     @Param('id') id: string,
@@ -63,6 +63,7 @@ export class ParticipationController {
   }
 
   @Post('/cancel-participation/:id')
+  @Roles(UserRole.User, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard)
   async cancelParticipation(@Param('id') id: string) {
     return await this.participationService.deleteParticipation(+id);
