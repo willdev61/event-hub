@@ -56,7 +56,7 @@ export class UsersController {
     return await this.usersService.removeUser(id);
   }
 
-  @Delete('desactivate-user/:id')
+  @Get('desactivate-user/:id')
   @Roles(UserRole.Admin, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async desactivateUserAccount(@Param('id') id: string) {
