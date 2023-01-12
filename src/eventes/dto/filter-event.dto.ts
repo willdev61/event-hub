@@ -5,7 +5,7 @@ import { Transform, Type } from 'class-transformer';
 export class FilterEventDto extends PaginationQueryDto {
   @IsString()
   @IsOptional()
-  title?: string;
+  search?: string;
 
   @IsOptional()
   @IsBoolean()

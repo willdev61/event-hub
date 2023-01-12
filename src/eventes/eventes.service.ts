@@ -28,15 +28,13 @@ export class EventesService {
     return await this.eventeRepository.save(event, user);
   }
 
-  // async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
-  //   const { limit, offset } = paginationQuery;
-
-  //   return this.eventeRepository.find({
-  //     where: { isPublished: true },
-  //     skip: offset,
-  //     take: limit,
-  //   });
-  // }
+  async getAllEvents({ limit, offset }: FilterEventDto): Promise<Evente[]> {
+    return this.eventeRepository.find({
+      where: { isPublished: true },
+      skip: offset,
+      take: limit,
+    });
+  }
 
   getOrganizerEvents(
     paginationQuery: PaginationQueryDto,
@@ -52,13 +50,19 @@ export class EventesService {
   }
 
   async getEventByFilter(
-    { title, status, limit, offset }: FilterEventDto, // paginationQuery: PaginationQueryDto,
+    { search, status, limit, offset }: FilterEventDto, // paginationQuery: PaginationQueryDto,
   ): Promise<Evente[]> {
-    const events = await this.eventeRepository.find({
-      where: { status, title, isPublished: true },
+    let events = await this.eventeRepository.find({
+      where: { isPublished: true },
       skip: offset,
       take: limit,
     });
+    if (status) {
+      events = events.filter((evente) => evente.status === status);
+    }
+    if (search) {
+      events = events.filter((evente) => evente.title.includes(search));
+    }
     return events;
   }
 
@@ -85,12 +89,10 @@ export class EventesService {
   }
 
   getOrganizerEventsByAdmin(paginationQuery: PaginationQueryDto, id: number) {
-    const { limit, offset } = paginationQuery;
-
     return this.eventeRepository
       .createQueryBuilder('evente')
       .where('evente.userId = :id', { id })
-      .getMany();
+      .getManyAndCount();
   }
 
   async findOne(id: string) {
