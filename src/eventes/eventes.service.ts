@@ -28,17 +28,6 @@ export class EventesService {
     return await this.eventeRepository.save(event, user);
   }
 
-  async publishEvent(id: number) {
-    const event = await this.eventeRepository.findOne({
-      where: { id: id, isPublished: false },
-    });
-    if (event) {
-      event.isPublished = true;
-      return this.eventeRepository.save(event);
-    }
-    throw new BadRequestException(`L'évènement d'id ${id} a déja été publié.`);
-  }
-
   // async getAllEvents(paginationQuery: PaginationQueryDto): Promise<Evente[]> {
   //   const { limit, offset } = paginationQuery;
 
@@ -71,6 +60,37 @@ export class EventesService {
       take: limit,
     });
     return events;
+  }
+
+  async publishEvent(id: number) {
+    const event = await this.eventeRepository.findOne({
+      where: { id: id, isPublished: false },
+    });
+    if (event) {
+      event.isPublished = true;
+      return this.eventeRepository.save(event);
+    }
+    throw new BadRequestException(`L'évènement d'id ${id} a déja été publié.`);
+  }
+
+  async unPublishEvent(id: number) {
+    const event = await this.eventeRepository.findOne({
+      where: { id: id, isPublished: true },
+    });
+    if (event) {
+      event.isPublished = false;
+      return this.eventeRepository.save(event);
+    }
+    throw new BadRequestException(`L'évènement d'id ${id} a déja été publié.`);
+  }
+
+  getOrganizerEventsByAdmin(paginationQuery: PaginationQueryDto, id: number) {
+    const { limit, offset } = paginationQuery;
+
+    return this.eventeRepository
+      .createQueryBuilder('evente')
+      .where('evente.userId = :id', { id })
+      .getMany();
   }
 
   async findOne(id: string) {

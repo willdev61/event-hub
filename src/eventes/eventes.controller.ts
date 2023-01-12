@@ -34,11 +34,6 @@ export class EventesController {
     return await this.eventesService.createEvent(createEventeDto, user);
   }
 
-  @Post('publish-event/:id')
-  async publishEvent(@Param('id') id: string) {
-    return this.eventesService.publishEvent(+id);
-  }
-
   @Get('get-all-events')
   async getAllEvents(@Query() filterDto: FilterEventDto): Promise<Evente[]> {
     return this.eventesService.getEventByFilter(filterDto);
@@ -61,6 +56,24 @@ export class EventesController {
   ) {
     console.log(filterDto);
     return this.eventesService.getEventByFilter(filterDto);
+  }
+
+  @Post('publish-event/:id')
+  async publishEvent(@Param('id') id: string) {
+    return this.eventesService.publishEvent(+id);
+  }
+
+  @Post('unpublish-event/:id')
+  async unPublishEvent(@Param('id') id: string) {
+    return this.eventesService.unPublishEvent(+id);
+  }
+
+  @Get('get-event-by-admin/:id')
+  getOrganizerEventsByAdmin(
+    @Query() paginationQuery: PaginationQueryDto,
+    @Param('id') id: string,
+  ) {
+    return this.eventesService.getOrganizerEventsByAdmin(paginationQuery, +id);
   }
 
   @Get('get-one/:id')
@@ -89,7 +102,7 @@ export class EventesController {
   }
 
   @Delete('desactivate-event/:id')
-  @Roles(UserRole.Organizer, UserRole.Admin)
+  @Roles(UserRole.Organizer, UserRole.SuperAdmin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UseGuards(JwtAuthGuard)
   async desactivateEvent(@Param('id') id: string) {
