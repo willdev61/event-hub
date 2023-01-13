@@ -74,6 +74,11 @@ export class UsersService {
         `L'utilisateur avec l'email ${email} non existant`,
       );
     }
+    if (user.deletedAt) {
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} a été bloqué par l'Administrateur`,
+      );
+    }
     return user;
   }
 
