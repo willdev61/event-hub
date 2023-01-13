@@ -64,7 +64,10 @@ export class EventesService {
       events = events.filter((evente) => evente.status === status);
     }
     if (search) {
-      events = events.filter((evente) => evente.title.includes(search));
+      events = events.filter(
+        (evente) =>
+          evente.title.includes(search) || evente.description.includes(search),
+      );
     }
     return events;
   }
