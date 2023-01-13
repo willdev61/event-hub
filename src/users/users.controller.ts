@@ -19,7 +19,6 @@ import { PaginationQueryDto } from 'src/pagination/dto/pagination-query.dto';
 import { UserRole } from 'src/enums/role.enum';
 import { CurrentUser, Roles } from 'src/auth/decorators';
 import { RolesGuard } from 'src/auth/guards';
-import { userInfo } from 'os';
 
 @Controller('users')
 export class UsersController {
@@ -33,13 +32,6 @@ export class UsersController {
     return await this.usersService.getAllUsers(paginationQuery);
   }
 
-  @Get('get-one-user:id')
-  @Roles(UserRole.Admin, UserRole.SuperAdmin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async getOneUser(@Param('id') id: string) {
-    return await this.usersService.getOneUser(id);
-  }
-
   @Patch('update-user-info')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -48,6 +40,14 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
     return await this.usersService.updateUser(user, updateUserDto);
+  }
+
+  @Get('get-one-user/:id')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Roles(UserRole.Admin, UserRole.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getOneUser(@Param('id') id: string) {
+    return await this.usersService.getOneUser(id);
   }
 
   @Delete('delete-user/:id')
