@@ -69,16 +69,17 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
-    if (!user) {
-      throw new NotFoundException(
-        `L'utilisateur avec l'email ${email} non existant`,
-      );
-    }
     if (user.deletedAt) {
       throw new NotFoundException(
         `L'utilisateur avec l'email ${email} a été bloqué par l'Administrateur`,
       );
     }
+    if (!user) {
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} non existant`,
+      );
+    }
+
     return user;
   }
 
