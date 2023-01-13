@@ -56,7 +56,7 @@ export class EventesService {
     { search, status, limit, offset }: FilterEventDto, // paginationQuery: PaginationQueryDto,
   ): Promise<Evente[]> {
     let events = await this.eventeRepository.find({
-      where: { isPublished: true },
+      where: { status, isPublished: true },
       skip: offset,
       take: limit,
     });

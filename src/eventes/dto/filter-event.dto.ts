@@ -9,8 +9,8 @@ export class FilterEventDto extends PaginationQueryDto {
 
   @IsOptional()
   @IsBoolean()
-  //   @Transform(({ value }) => {
-  //     return ['true', true, '1', 1].indexOf(value) > -1;
-  //   })
+  @Transform(({ value }) => {
+    return ['true', true, '1', 1].indexOf(value) > -1;
+  })
   status?: boolean;
 }
